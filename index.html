@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Customer App</title>
+  </head>
+  <body>
+    <h1>Customer Management</h1>
+
+    <form id="customerForm">
+      <input type="text" id="name" placeholder="Name" required />
+      <input type="text" id="contact" placeholder="Contact" required />
+      <input type="text" id="address" placeholder="Address" />
+      <button type="submit">Add Customer</button>
+    </form>
+
+    <h2>Customers</h2>
+    <ul id="customerList"></ul>
+
+    <h2>Purchase History</h2>
+    <form id="purchaseForm">
+      <select id="customerSelect"></select>
+      <input type="text" id="item" placeholder="Item" required />
+      <input type="number" id="amount" placeholder="Amount" required />
+      <button type="submit">Add Purchase</button>
+    </form>
+    <ul id="purchaseList"></ul>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>
