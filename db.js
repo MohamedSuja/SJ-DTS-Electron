@@ -18,7 +18,6 @@ try {
       name TEXT NOT NULL,
       contact TEXT NOT NULL,
       address TEXT,
-      email TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )

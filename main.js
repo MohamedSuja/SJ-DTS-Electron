@@ -37,14 +37,9 @@ app.on("activate", () => {
 // Add Customer
 ipcMain.handle("add-customer", (event, customer) => {
   const stmt = db.prepare(
-    "INSERT INTO customers (name, contact, address, email) VALUES (?, ?, ?, ?)"
+    "INSERT INTO customers (name, contact, address) VALUES (?, ?, ?)"
   );
-  const result = stmt.run(
-    customer.name,
-    customer.contact,
-    customer.address,
-    customer.email
-  );
+  const result = stmt.run(customer.name, customer.contact, customer.address);
   return result.lastInsertRowid;
 });
 
@@ -72,13 +67,12 @@ ipcMain.handle("get-customer", (event, id) => {
 // Update Customer
 ipcMain.handle("update-customer", (event, customer) => {
   const stmt = db.prepare(
-    "UPDATE customers SET name = ?, contact = ?, address = ?, email = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+    "UPDATE customers SET name = ?, contact = ?, address = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
   );
   const result = stmt.run(
     customer.name,
     customer.contact,
     customer.address,
-    customer.email,
     customer.id
   );
   return result.changes > 0;

@@ -70,10 +70,7 @@ function displayCustomers(customers) {
                     <span class="info-label">Phone</span>
                     <span class="info-value">${customer.contact}</span>
                 </div>
-                <div class="info-item">
-                    <span class="info-label">Email</span>
-                    <span class="info-value">${customer.email || "N/A"}</span>
-                </div>
+
                 <div class="info-item">
                     <span class="info-label">Address</span>
                     <span class="info-value">${customer.address || "N/A"}</span>
@@ -148,7 +145,7 @@ async function editCustomer(customerId) {
       document.getElementById("customerId").value = customer.id;
       document.getElementById("customerName").value = customer.name;
       document.getElementById("customerContact").value = customer.contact;
-      document.getElementById("customerEmail").value = customer.email || "";
+
       document.getElementById("customerAddress").value = customer.address || "";
       document.getElementById("customerFormTitle").textContent =
         "Edit Customer";
@@ -478,7 +475,6 @@ customerForm.addEventListener("submit", async (e) => {
   const customerData = {
     name: document.getElementById("customerName").value.trim(),
     contact: document.getElementById("customerContact").value.trim(),
-    email: document.getElementById("customerEmail").value.trim(),
     address: document.getElementById("customerAddress").value.trim(),
   };
 
