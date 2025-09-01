@@ -69,9 +69,7 @@ try {
   db.prepare(
     "CREATE INDEX IF NOT EXISTS idx_customers_contact ON customers(contact)"
   ).run();
-  db.prepare(
-    "CREATE INDEX IF NOT EXISTS idx_items_name ON items(name)"
-  ).run();
+  db.prepare("CREATE INDEX IF NOT EXISTS idx_items_name ON items(name)").run();
   db.prepare(
     "CREATE INDEX IF NOT EXISTS idx_purchases_customer_id ON purchases(customer_id)"
   ).run();

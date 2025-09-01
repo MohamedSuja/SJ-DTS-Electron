@@ -506,7 +506,13 @@
               </div>
               <div class="form-group">
                 <label for="itemUnitPrice">Unit Price *</label>
-                <input type="number" id="itemUnitPrice" step="0.01" min="0" required />
+                <input
+                  type="number"
+                  id="itemUnitPrice"
+                  step="0.01"
+                  min="0"
+                  required
+                />
               </div>
             </div>
             <button type="submit" class="btn btn-primary">Save Item</button>
@@ -565,10 +571,7 @@
               <div class="form-group">
                 <label for="purchaseItem">Item *</label>
                 <div class="searchable-dropdown" id="itemDropdown">
-                  <div
-                    class="dropdown-header"
-                    onclick="toggleItemDropdown()"
-                  >
+                  <div class="dropdown-header" onclick="toggleItemDropdown()">
                     <span id="selectedItemText">Select Item</span>
                     <span class="dropdown-arrow">▼</span>
                   </div>

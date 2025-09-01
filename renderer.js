@@ -20,11 +20,11 @@ const itemSearch = document.getElementById("itemSearch");
 document.addEventListener("click", function (event) {
   const customerDropdown = document.getElementById("customerDropdown");
   const itemDropdown = document.getElementById("itemDropdown");
-  
+
   if (customerDropdown && !customerDropdown.contains(event.target)) {
     hideCustomerDropdown();
   }
-  
+
   if (itemDropdown && !itemDropdown.contains(event.target)) {
     hideItemDropdown();
   }
@@ -232,13 +232,21 @@ function displayItems(items) {
     itemCard.innerHTML = `
       <div class="card-content">
         <h4>${item.name}</h4>
-        <p><strong>Description:</strong> ${item.description || "No description"}</p>
+        <p><strong>Description:</strong> ${
+          item.description || "No description"
+        }</p>
         <p><strong>Unit Price:</strong> $${item.unit_price}</p>
-        <p><strong>Created:</strong> ${new Date(item.created_at).toLocaleDateString()}</p>
+        <p><strong>Created:</strong> ${new Date(
+          item.created_at
+        ).toLocaleDateString()}</p>
       </div>
       <div class="card-actions">
-        <button class="btn btn-secondary" onclick="editItem(${item.id})">Edit</button>
-        <button class="btn btn-danger" onclick="deleteItem(${item.id})">Delete</button>
+        <button class="btn btn-secondary" onclick="editItem(${
+          item.id
+        })">Edit</button>
+        <button class="btn btn-danger" onclick="deleteItem(${
+          item.id
+        })">Delete</button>
       </div>
     `;
     itemList.appendChild(itemCard);
@@ -259,17 +267,17 @@ async function addItem(itemData) {
 
 async function updateItem(itemData) {
   try {
-  const success = await window.api.updateItem(itemData);
-  if (success) {
-    await loadItems();
-    resetItemForm();
-  } else {
+    const success = await window.api.updateItem(itemData);
+    if (success) {
+      await loadItems();
+      resetItemForm();
+    } else {
+      alert("Error updating item");
+    }
+  } catch (error) {
+    console.error("Error updating item:", error);
     alert("Error updating item");
   }
-} catch (error) {
-  console.error("Error updating item:", error);
-  alert("Error updating item");
-}
 }
 
 async function editItem(itemId) {
@@ -296,7 +304,9 @@ async function deleteItem(itemId) {
       await loadItems();
     } catch (error) {
       console.error("Error deleting item:", error);
-      if (error.message.includes("Cannot delete item that is used in purchases")) {
+      if (
+        error.message.includes("Cannot delete item that is used in purchases")
+      ) {
         alert("Cannot delete item that is used in purchases");
       } else {
         alert("Error deleting item");
@@ -480,9 +490,7 @@ async function editPurchase(purchaseId) {
       }
 
       // Update item dropdown display
-      const item = currentItems.find(
-        (i) => i.id === purchase.item_id
-      );
+      const item = currentItems.find((i) => i.id === purchase.item_id);
       if (item) {
         document.getElementById(
           "selectedItemText"
@@ -525,9 +533,8 @@ function resetPurchaseForm() {
     "Select Customer";
   document.getElementById("customerSearchInput").value = "";
   hideCustomerDropdown();
-  
-  document.getElementById("selectedItemText").textContent =
-    "Select Item";
+
+  document.getElementById("selectedItemText").textContent = "Select Item";
   document.getElementById("itemSearchInput").value = "";
   hideItemDropdown();
 }
@@ -637,7 +644,11 @@ function updateItemSelect() {
     option.setAttribute("data-text", `${item.name} - $${item.unit_price}`);
     option.textContent = `${item.name} - $${item.unit_price}`;
     option.onclick = () =>
-      selectItem(item.id, `${item.name} - $${item.unit_price}`, item.unit_price);
+      selectItem(
+        item.id,
+        `${item.name} - $${item.unit_price}`,
+        item.unit_price
+      );
     itemOptions.appendChild(option);
   });
 }
