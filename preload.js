@@ -10,6 +10,15 @@ contextBridge.exposeInMainWorld("api", {
   searchCustomers: (searchTerm) =>
     ipcRenderer.invoke("search-customers", searchTerm),
 
+  // Item Management
+  addItem: (item) => ipcRenderer.invoke("add-item", item),
+  getItems: () => ipcRenderer.invoke("get-items"),
+  getItem: (id) => ipcRenderer.invoke("get-item", id),
+  updateItem: (item) => ipcRenderer.invoke("update-item", item),
+  deleteItem: (id) => ipcRenderer.invoke("delete-item", id),
+  searchItems: (searchTerm) =>
+    ipcRenderer.invoke("search-items", searchTerm),
+
   // Purchase Management
   addPurchase: (purchase) => ipcRenderer.invoke("add-purchase", purchase),
   getPurchases: (customerId) => ipcRenderer.invoke("get-purchases", customerId),

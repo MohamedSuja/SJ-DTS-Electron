@@ -391,6 +391,16 @@
         color: #666;
         font-style: italic;
       }
+
+      .no-data {
+        padding: 20px;
+        text-align: center;
+        color: #666;
+        font-style: italic;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin: 20px 0;
+      }
     </style>
   </head>
   <body>
@@ -404,6 +414,7 @@
         <button class="tab active" onclick="showTab('customers')">
           Customers
         </button>
+        <button class="tab" onclick="showTab('items')">Items</button>
         <button class="tab" onclick="showTab('purchases')">Purchases</button>
       </div>
 
@@ -466,6 +477,56 @@
         </div>
       </div>
 
+      <!-- Items Tab -->
+      <div id="items" class="tab-content">
+        <!-- Search Section -->
+        <div class="search-section">
+          <input
+            type="text"
+            id="itemSearch"
+            class="search-input"
+            placeholder="Search items by name..."
+            oninput="searchItems()"
+          />
+        </div>
+
+        <!-- Add/Edit Item Form -->
+        <div class="form-section">
+          <h3 class="form-title" id="itemFormTitle">Add New Item</h3>
+          <form id="itemForm">
+            <input type="hidden" id="itemId" />
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="itemName">Item Name *</label>
+                <input type="text" id="itemName" required />
+              </div>
+              <div class="form-group">
+                <label for="itemDescription">Description</label>
+                <textarea id="itemDescription" rows="3"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="itemUnitPrice">Unit Price *</label>
+                <input type="number" id="itemUnitPrice" step="0.01" min="0" required />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Save Item</button>
+            <button
+              type="button"
+              class="btn btn-secondary"
+              onclick="resetItemForm()"
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+
+        <!-- Items List -->
+        <div class="list-section">
+          <h3 class="list-title">Item List</h3>
+          <div id="itemList"></div>
+        </div>
+      </div>
+
       <!-- Purchases Tab -->
       <div id="purchases" class="tab-content">
         <!-- Add/Edit Purchase Form -->
@@ -502,8 +563,31 @@
                 </div>
               </div>
               <div class="form-group">
-                <label for="purchaseItem">Item Name *</label>
-                <input type="text" id="purchaseItem" required />
+                <label for="purchaseItem">Item *</label>
+                <div class="searchable-dropdown" id="itemDropdown">
+                  <div
+                    class="dropdown-header"
+                    onclick="toggleItemDropdown()"
+                  >
+                    <span id="selectedItemText">Select Item</span>
+                    <span class="dropdown-arrow">▼</span>
+                  </div>
+                  <div class="dropdown-content" id="itemDropdownContent">
+                    <div class="search-input-container">
+                      <input
+                        type="text"
+                        id="itemSearchInput"
+                        placeholder="Search items..."
+                        oninput="filterItems(this.value)"
+                        onfocus="showItemDropdown()"
+                      />
+                    </div>
+                    <div class="dropdown-options" id="itemOptions">
+                      <!-- Item options will be populated here -->
+                    </div>
+                  </div>
+                  <input type="hidden" id="purchaseItem" required />
+                </div>
               </div>
               <div class="form-group">
                 <label for="purchaseDescription">Description</label>

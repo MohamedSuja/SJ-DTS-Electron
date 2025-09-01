@@ -1,21 +1,32 @@
 // Global variables
 let currentCustomers = [];
+let currentItems = [];
 let currentPurchases = [];
 let editingCustomerId = null;
+let editingItemId = null;
 let editingPurchaseId = null;
 
 // DOM elements
 const customerForm = document.getElementById("customerForm");
+const itemForm = document.getElementById("itemForm");
 const purchaseForm = document.getElementById("purchaseForm");
 const customerList = document.getElementById("customerList");
+const itemList = document.getElementById("itemList");
 const purchaseList = document.getElementById("purchaseList");
 const customerSearch = document.getElementById("customerSearch");
+const itemSearch = document.getElementById("itemSearch");
 
-// Add click outside handler for dropdown
+// Add click outside handler for dropdowns
 document.addEventListener("click", function (event) {
-  const dropdown = document.getElementById("customerDropdown");
-  if (dropdown && !dropdown.contains(event.target)) {
+  const customerDropdown = document.getElementById("customerDropdown");
+  const itemDropdown = document.getElementById("itemDropdown");
+  
+  if (customerDropdown && !customerDropdown.contains(event.target)) {
     hideCustomerDropdown();
+  }
+  
+  if (itemDropdown && !itemDropdown.contains(event.target)) {
+    hideItemDropdown();
   }
 });
 
@@ -38,6 +49,8 @@ function showTab(tabName) {
   // Load data for the selected tab
   if (tabName === "customers") {
     loadCustomers();
+  } else if (tabName === "items") {
+    loadItems();
   } else if (tabName === "purchases") {
     loadAllPurchases();
   }
@@ -193,6 +206,128 @@ function resetCustomerForm() {
   document.getElementById("customerFormTitle").textContent = "Add New Customer";
 }
 
+// Item Management Functions
+
+async function loadItems() {
+  try {
+    currentItems = await window.api.getItems();
+    displayItems(currentItems);
+    updateItemSelect();
+  } catch (error) {
+    console.error("Error loading items:", error);
+    alert("Error loading items");
+  }
+}
+
+function displayItems(items) {
+  itemList.innerHTML = "";
+  if (items.length === 0) {
+    itemList.innerHTML = '<div class="no-data">No items found</div>';
+    return;
+  }
+
+  items.forEach((item) => {
+    const itemCard = document.createElement("div");
+    itemCard.className = "card";
+    itemCard.innerHTML = `
+      <div class="card-content">
+        <h4>${item.name}</h4>
+        <p><strong>Description:</strong> ${item.description || "No description"}</p>
+        <p><strong>Unit Price:</strong> $${item.unit_price}</p>
+        <p><strong>Created:</strong> ${new Date(item.created_at).toLocaleDateString()}</p>
+      </div>
+      <div class="card-actions">
+        <button class="btn btn-secondary" onclick="editItem(${item.id})">Edit</button>
+        <button class="btn btn-danger" onclick="deleteItem(${item.id})">Delete</button>
+      </div>
+    `;
+    itemList.appendChild(itemCard);
+  });
+}
+
+async function addItem(itemData) {
+  try {
+    const itemId = await window.api.addItem(itemData);
+    await loadItems();
+    resetItemForm();
+    return itemId;
+  } catch (error) {
+    console.error("Error adding item:", error);
+    alert("Error adding item");
+  }
+}
+
+async function updateItem(itemData) {
+  try {
+  const success = await window.api.updateItem(itemData);
+  if (success) {
+    await loadItems();
+    resetItemForm();
+  } else {
+    alert("Error updating item");
+  }
+} catch (error) {
+  console.error("Error updating item:", error);
+  alert("Error updating item");
+}
+}
+
+async function editItem(itemId) {
+  try {
+    const item = currentItems.find((i) => i.id === itemId);
+    if (item) {
+      editingItemId = itemId;
+      document.getElementById("itemId").value = item.id;
+      document.getElementById("itemName").value = item.name;
+      document.getElementById("itemDescription").value = item.description || "";
+      document.getElementById("itemUnitPrice").value = item.unit_price;
+      document.getElementById("itemFormTitle").textContent = "Edit Item";
+    }
+  } catch (error) {
+    console.error("Error loading item for edit:", error);
+    alert("Error loading item data");
+  }
+}
+
+async function deleteItem(itemId) {
+  if (confirm("Are you sure you want to delete this item?")) {
+    try {
+      await window.api.deleteItem(itemId);
+      await loadItems();
+    } catch (error) {
+      console.error("Error deleting item:", error);
+      if (error.message.includes("Cannot delete item that is used in purchases")) {
+        alert("Cannot delete item that is used in purchases");
+      } else {
+        alert("Error deleting item");
+      }
+    }
+  }
+}
+
+function resetItemForm() {
+  editingItemId = null;
+  document.getElementById("itemForm").reset();
+  document.getElementById("itemId").value = "";
+  document.getElementById("itemFormTitle").textContent = "Add New Item";
+}
+
+async function searchItems() {
+  const searchTerm = document.getElementById("itemSearch").value.trim();
+  if (searchTerm === "") {
+    await loadItems();
+    return;
+  }
+
+  try {
+    const searchResults = await window.api.searchItems(searchTerm);
+    displayItems(searchResults);
+  } catch (error) {
+    console.error("Error searching items:", error);
+    alert("Error searching items");
+  }
+}
+
 // Purchase Management Functions
 
 async function loadAllPurchases() {
@@ -325,7 +460,7 @@ async function editPurchase(purchaseId) {
       editingPurchaseId = purchaseId;
       document.getElementById("purchaseId").value = purchase.id;
       document.getElementById("purchaseCustomer").value = purchase.customer_id;
-      document.getElementById("purchaseItem").value = purchase.item_name;
+      document.getElementById("purchaseItem").value = purchase.item_id;
       document.getElementById("purchaseDescription").value =
         purchase.description || "";
       document.getElementById("purchaseQuantity").value = purchase.quantity;
@@ -342,6 +477,16 @@ async function editPurchase(purchaseId) {
         document.getElementById(
           "selectedCustomerText"
         ).textContent = `${customer.name} (${customer.contact})`;
+      }
+
+      // Update item dropdown display
+      const item = currentItems.find(
+        (i) => i.id === purchase.item_id
+      );
+      if (item) {
+        document.getElementById(
+          "selectedItemText"
+        ).textContent = `${item.name} - $${item.unit_price}`;
       }
     }
   } catch (error) {
@@ -375,11 +520,16 @@ function resetPurchaseForm() {
   document.getElementById("purchaseTotal").value = "";
   document.getElementById("purchaseFormTitle").textContent = "Add New Purchase";
 
-  // Reset searchable dropdown
+  // Reset searchable dropdowns
   document.getElementById("selectedCustomerText").textContent =
     "Select Customer";
   document.getElementById("customerSearchInput").value = "";
   hideCustomerDropdown();
+  
+  document.getElementById("selectedItemText").textContent =
+    "Select Item";
+  document.getElementById("itemSearchInput").value = "";
+  hideItemDropdown();
 }
 
 function updateCustomerSelect() {
@@ -469,6 +619,103 @@ function filterCustomers(searchTerm) {
       noResultsMsg.className = "no-results";
       noResultsMsg.textContent = "No customers found";
       customerOptions.appendChild(noResultsMsg);
+    }
+  } else if (noResultsMsg) {
+    noResultsMsg.remove();
+  }
+}
+
+// Item dropdown functions
+function updateItemSelect() {
+  const itemOptions = document.getElementById("itemOptions");
+  itemOptions.innerHTML = "";
+
+  currentItems.forEach((item) => {
+    const option = document.createElement("div");
+    option.className = "dropdown-option";
+    option.setAttribute("data-value", item.id);
+    option.setAttribute("data-text", `${item.name} - $${item.unit_price}`);
+    option.textContent = `${item.name} - $${item.unit_price}`;
+    option.onclick = () =>
+      selectItem(item.id, `${item.name} - $${item.unit_price}`, item.unit_price);
+    itemOptions.appendChild(option);
+  });
+}
+
+function toggleItemDropdown() {
+  const dropdownContent = document.getElementById("itemDropdownContent");
+  const dropdownHeader = document.querySelector(
+    "#itemDropdown .dropdown-header"
+  );
+
+  if (dropdownContent.classList.contains("show")) {
+    hideItemDropdown();
+  } else {
+    showItemDropdown();
+  }
+}
+
+function showItemDropdown() {
+  const dropdownContent = document.getElementById("itemDropdownContent");
+  const dropdownHeader = document.querySelector(
+    "#itemDropdown .dropdown-header"
+  );
+
+  dropdownContent.classList.add("show");
+  dropdownHeader.classList.add("active");
+
+  // Focus on search input
+  document.getElementById("itemSearchInput").focus();
+}
+
+function hideItemDropdown() {
+  const dropdownContent = document.getElementById("itemDropdownContent");
+  const dropdownHeader = document.querySelector(
+    "#itemDropdown .dropdown-header"
+  );
+
+  dropdownContent.classList.remove("show");
+  dropdownHeader.classList.remove("active");
+}
+
+function selectItem(itemId, itemText, unitPrice) {
+  document.getElementById("purchaseItem").value = itemId;
+  document.getElementById("selectedItemText").textContent = itemText;
+  document.getElementById("purchaseUnitPrice").value = unitPrice;
+  hideItemDropdown();
+
+  // Clear search input
+  document.getElementById("itemSearchInput").value = "";
+
+  // Reset filter
+  filterItems("");
+
+  // Calculate total
+  calculateTotal();
+}
+
+function filterItems(searchTerm) {
+  const itemOptions = document.getElementById("itemOptions");
+  const options = itemOptions.querySelectorAll(".dropdown-option");
+
+  options.forEach((option) => {
+    const text = option.textContent.toLowerCase();
+    const matches = text.includes(searchTerm.toLowerCase());
+    option.style.display = matches ? "block" : "none";
+  });
+
+  // Show/hide no results message
+  const visibleOptions = Array.from(options).filter(
+    (option) => option.style.display !== "none"
+  );
+
+  let noResultsMsg = itemOptions.querySelector(".no-results");
+  if (visibleOptions.length === 0 && searchTerm.trim() !== "") {
+    if (!noResultsMsg) {
+      noResultsMsg = document.createElement("div");
+      noResultsMsg.className = "no-results";
+      noResultsMsg.textContent = "No items found";
+      itemOptions.appendChild(noResultsMsg);
     }
   } else if (noResultsMsg) {
     noResultsMsg.remove();
@@ -591,12 +838,29 @@ customerForm.addEventListener("submit", async (e) => {
   }
 });
 
+itemForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const itemData = {
+    name: document.getElementById("itemName").value.trim(),
+    description: document.getElementById("itemDescription").value.trim(),
+    unit_price: parseFloat(document.getElementById("itemUnitPrice").value),
+  };
+
+  if (editingItemId) {
+    itemData.id = editingItemId;
+    await updateItem(itemData);
+  } else {
+    await addItem(itemData);
+  }
+});
+
 purchaseForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const purchaseData = {
     customer_id: parseInt(document.getElementById("purchaseCustomer").value),
-    item_name: document.getElementById("purchaseItem").value.trim(),
+    item_id: parseInt(document.getElementById("purchaseItem").value),
     description: document.getElementById("purchaseDescription").value.trim(),
     quantity: parseInt(document.getElementById("purchaseQuantity").value),
     unit_price: parseFloat(document.getElementById("purchaseUnitPrice").value),
@@ -614,5 +878,6 @@ purchaseForm.addEventListener("submit", async (e) => {
 // Initialize the application
 document.addEventListener("DOMContentLoaded", () => {
   loadCustomers();
+  loadItems();
   loadAllPurchases();
 });
