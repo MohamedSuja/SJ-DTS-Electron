@@ -11,6 +11,14 @@ const customerList = document.getElementById("customerList");
 const purchaseList = document.getElementById("purchaseList");
 const customerSearch = document.getElementById("customerSearch");
 
+// Add click outside handler for dropdown
+document.addEventListener('click', function(event) {
+  const dropdown = document.getElementById('customerDropdown');
+  if (dropdown && !dropdown.contains(event.target)) {
+    hideCustomerDropdown();
+  }
+});
+
 // Tab functionality
 function showTab(tabName) {
   // Hide all tab contents
@@ -325,6 +333,12 @@ async function editPurchase(purchaseId) {
       document.getElementById("purchaseTotal").value = purchase.total_amount;
       document.getElementById("purchaseFormTitle").textContent =
         "Edit Purchase";
+      
+      // Update searchable dropdown display
+      const customer = currentCustomers.find(c => c.id === purchase.customer_id);
+      if (customer) {
+        document.getElementById("selectedCustomerText").textContent = `${customer.name} (${customer.contact})`;
+      }
     }
   } catch (error) {
     console.error("Error loading purchase for edit:", error);
@@ -356,18 +370,97 @@ function resetPurchaseForm() {
   document.getElementById("purchaseQuantity").value = "1";
   document.getElementById("purchaseTotal").value = "";
   document.getElementById("purchaseFormTitle").textContent = "Add New Purchase";
+  
+  // Reset searchable dropdown
+  document.getElementById("selectedCustomerText").textContent = "Select Customer";
+  document.getElementById("customerSearchInput").value = "";
+  hideCustomerDropdown();
 }
 
 function updateCustomerSelect() {
-  const customerSelect = document.getElementById("purchaseCustomer");
-  customerSelect.innerHTML = '<option value="">Select Customer</option>';
+  const customerOptions = document.getElementById("customerOptions");
+  customerOptions.innerHTML = '';
 
   currentCustomers.forEach((customer) => {
-    const option = document.createElement("option");
-    option.value = customer.id;
+    const option = document.createElement("div");
+    option.className = "dropdown-option";
+    option.setAttribute("data-value", customer.id);
+    option.setAttribute("data-text", `${customer.name} (${customer.contact})`);
     option.textContent = `${customer.name} (${customer.contact})`;
-    customerSelect.appendChild(option);
+    option.onclick = () => selectCustomer(customer.id, `${customer.name} (${customer.contact})`);
+    customerOptions.appendChild(option);
   });
+}
+
+// Searchable dropdown functions
+function toggleCustomerDropdown() {
+  const dropdownContent = document.getElementById("customerDropdownContent");
+  const dropdownHeader = document.querySelector("#customerDropdown .dropdown-header");
+  
+  if (dropdownContent.classList.contains("show")) {
+    hideCustomerDropdown();
+  } else {
+    showCustomerDropdown();
+  }
+}
+
+function showCustomerDropdown() {
+  const dropdownContent = document.getElementById("customerDropdownContent");
+  const dropdownHeader = document.querySelector("#customerDropdown .dropdown-header");
+  
+  dropdownContent.classList.add("show");
+  dropdownHeader.classList.add("active");
+  
+  // Focus on search input
+  document.getElementById("customerSearchInput").focus();
+}
+
+function hideCustomerDropdown() {
+  const dropdownContent = document.getElementById("customerDropdownContent");
+  const dropdownHeader = document.querySelector("#customerDropdown .dropdown-header");
+  
+  dropdownContent.classList.remove("show");
+  dropdownHeader.classList.remove("active");
+}
+
+function selectCustomer(customerId, customerText) {
+  document.getElementById("purchaseCustomer").value = customerId;
+  document.getElementById("selectedCustomerText").textContent = customerText;
+  hideCustomerDropdown();
+  
+  // Clear search input
+  document.getElementById("customerSearchInput").value = "";
+  
+  // Reset filter
+  filterCustomers("");
+}
+
+function filterCustomers(searchTerm) {
+  const customerOptions = document.getElementById("customerOptions");
+  const options = customerOptions.querySelectorAll(".dropdown-option");
+  
+  options.forEach(option => {
+    const text = option.textContent.toLowerCase();
+    const matches = text.includes(searchTerm.toLowerCase());
+    option.style.display = matches ? "block" : "none";
+  });
+  
+  // Show/hide no results message
+  const visibleOptions = Array.from(options).filter(option => 
+    option.style.display !== "none"
+  );
+  
+  let noResultsMsg = customerOptions.querySelector(".no-results");
+  if (visibleOptions.length === 0 && searchTerm.trim() !== "") {
+    if (!noResultsMsg) {
+      noResultsMsg = document.createElement("div");
+      noResultsMsg.className = "no-results";
+      noResultsMsg.textContent = "No customers found";
+      customerOptions.appendChild(noResultsMsg);
+    }
+  } else if (noResultsMsg) {
+    noResultsMsg.remove();
+  }
 }
 
 function calculateTotal() {

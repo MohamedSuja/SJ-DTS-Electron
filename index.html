@@ -288,6 +288,109 @@
           flex-direction: column;
         }
       }
+
+      /* Searchable Dropdown Styles */
+      .searchable-dropdown {
+        position: relative;
+        width: 100%;
+      }
+
+      .dropdown-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        border: 2px solid #dee2e6;
+        border-radius: 8px;
+        background: white;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+        min-height: 48px;
+      }
+
+      .dropdown-header:hover {
+        border-color: #4facfe;
+      }
+
+      .dropdown-arrow {
+        font-size: 12px;
+        color: #666;
+        transition: transform 0.3s ease;
+      }
+
+      .dropdown-header.active .dropdown-arrow {
+        transform: rotate(180deg);
+      }
+
+      .dropdown-content {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 2px solid #dee2e6;
+        border-top: none;
+        border-radius: 0 0 8px 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        z-index: 1000;
+        display: none;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .dropdown-content.show {
+        display: block;
+      }
+
+      .search-input-container {
+        padding: 10px;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .search-input-container input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        font-size: 14px;
+        outline: none;
+      }
+
+      .search-input-container input:focus {
+        border-color: #4facfe;
+      }
+
+      .dropdown-options {
+        max-height: 250px;
+        overflow-y: auto;
+      }
+
+      .dropdown-option {
+        padding: 10px 12px;
+        cursor: pointer;
+        border-bottom: 1px solid #f0f0f0;
+        transition: background-color 0.2s ease;
+      }
+
+      .dropdown-option:hover {
+        background-color: #f8f9fa;
+      }
+
+      .dropdown-option.selected {
+        background-color: #e3f2fd;
+        color: #1976d2;
+      }
+
+      .dropdown-option:last-child {
+        border-bottom: none;
+      }
+
+      .no-results {
+        padding: 15px;
+        text-align: center;
+        color: #666;
+        font-style: italic;
+      }
     </style>
   </head>
   <body>
@@ -373,9 +476,27 @@
             <div class="form-grid">
               <div class="form-group">
                 <label for="purchaseCustomer">Customer *</label>
-                <select id="purchaseCustomer" required>
-                  <option value="">Select Customer</option>
-                </select>
+                <div class="searchable-dropdown" id="customerDropdown">
+                  <div class="dropdown-header" onclick="toggleCustomerDropdown()">
+                    <span id="selectedCustomerText">Select Customer</span>
+                    <span class="dropdown-arrow">▼</span>
+                  </div>
+                  <div class="dropdown-content" id="customerDropdownContent">
+                    <div class="search-input-container">
+                      <input 
+                        type="text" 
+                        id="customerSearchInput" 
+                        placeholder="Search customers..." 
+                        oninput="filterCustomers(this.value)"
+                        onfocus="showCustomerDropdown()"
+                      />
+                    </div>
+                    <div class="dropdown-options" id="customerOptions">
+                      <!-- Customer options will be populated here -->
+                    </div>
+                  </div>
+                  <input type="hidden" id="purchaseCustomer" required />
+                </div>
               </div>
               <div class="form-group">
                 <label for="purchaseItem">Item Name *</label>
