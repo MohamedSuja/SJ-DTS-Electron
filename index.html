@@ -215,6 +215,13 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
       }
 
+      .item-card-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+      }
+
       .customer-card:hover,
       .purchase-card:hover,
       .item-card:hover {
@@ -229,6 +236,7 @@
         grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
         gap: 8px;
         margin-bottom: 12px;
+        flex: 1;
       }
 
       .info-item {
@@ -251,8 +259,11 @@
 
       .card-actions {
         display: flex;
+        flex-direction: column;
         gap: 8px;
-        flex-wrap: wrap;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        flex-shrink: 0;
       }
 
       .btn-sm {
@@ -287,8 +298,14 @@
           grid-template-columns: 1fr;
         }
 
+        .item-card-content {
+          flex-direction: column;
+          gap: 15px;
+        }
+
         .card-actions {
           flex-direction: column;
+          align-items: stretch;
         }
       }
 
@@ -432,14 +449,14 @@
             placeholder="Search customers by name or phone number..."
             oninput="searchCustomers()"
           />
-          <button
+          <!--     <button
             type="button"
             class="btn btn-secondary"
             onclick="testDatabaseConnection()"
             style="margin-top: 10px"
           >
             Test Database Connection
-          </button>
+          </button> -->
         </div>
 
         <!-- Add/Edit Customer Form -->
@@ -503,10 +520,7 @@
                 <label for="itemName">Item Name *</label>
                 <input type="text" id="itemName" required />
               </div>
-              <div class="form-group">
-                <label for="itemDescription">Description</label>
-                <textarea id="itemDescription" rows="3"></textarea>
-              </div>
+
               <div class="form-group">
                 <label for="itemUnitPrice">Unit Price *</label>
                 <input
@@ -516,6 +530,10 @@
                   min="0"
                   required
                 />
+              </div>
+              <div class="form-group">
+                <label for="itemDescription">Description</label>
+                <textarea id="itemDescription" rows="3"></textarea>
               </div>
             </div>
             <button type="submit" class="btn btn-primary">Save Item</button>
@@ -595,10 +613,7 @@
                   <input type="hidden" id="purchaseItem" required />
                 </div>
               </div>
-              <div class="form-group">
-                <label for="purchaseDescription">Description</label>
-                <textarea id="purchaseDescription" rows="3"></textarea>
-              </div>
+
               <div class="form-group">
                 <label for="purchaseQuantity">Quantity *</label>
                 <input
@@ -609,6 +624,10 @@
                   required
                   onchange="calculateTotal()"
                 />
+              </div>
+              <div class="form-group">
+                <label for="purchaseDescription">Description</label>
+                <textarea id="purchaseDescription" rows="3"></textarea>
               </div>
               <div class="form-group">
                 <label for="purchaseUnitPrice">Unit Price *</label>

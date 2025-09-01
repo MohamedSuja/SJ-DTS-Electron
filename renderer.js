@@ -97,7 +97,7 @@ function displayCustomers(customers) {
                     <span class="info-value">${customer.address || "N/A"}</span>
                 </div>
             </div>
-            <div class="card-actions">
+            <div class="card-actions2">
                 <button class="btn btn-sm btn-success" onclick="editCustomer(${
                   customer.id
                 })">Edit</button>
@@ -230,35 +230,37 @@ function displayItems(items) {
     const itemCard = document.createElement("div");
     itemCard.className = "item-card";
     itemCard.innerHTML = `
-      <div class="item-info">
-        <div class="info-item">
-          <span class="info-label">Name</span>
-          <span class="info-value">${item.name}</span>
+      <div class="item-card-content">
+        <div class="item-info">
+          <div class="info-item">
+            <span class="info-label">Name</span>
+            <span class="info-value">${item.name}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Description</span>
+            <span class="info-value">${
+              item.description || "No description"
+            }</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Unit Price</span>
+            <span class="info-value">$${item.unit_price}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Created</span>
+            <span class="info-value">${new Date(
+              item.created_at
+            ).toLocaleDateString()}</span>
+          </div>
         </div>
-        <div class="info-item">
-          <span class="info-label">Description</span>
-          <span class="info-value">${
-            item.description || "No description"
-          }</span>
+        <div class="card-actions">
+          <button class="btn btn-sm btn-success" onclick="editItem(${
+            item.id
+          })">Edit</button>
+          <button class="btn btn-sm btn-danger" onclick="deleteItem(${
+            item.id
+          })">Delete</button>
         </div>
-        <div class="info-item">
-          <span class="info-label">Unit Price</span>
-          <span class="info-value">$${item.unit_price}</span>
-        </div>
-        <div class="info-item">
-          <span class="info-label">Created</span>
-          <span class="info-value">${new Date(
-            item.created_at
-          ).toLocaleDateString()}</span>
-        </div>
-      </div>
-      <div class="card-actions">
-        <button class="btn btn-sm btn-success" onclick="editItem(${
-          item.id
-        })">Edit</button>
-        <button class="btn btn-sm btn-danger" onclick="deleteItem(${
-          item.id
-        })">Delete</button>
       </div>
     `;
     itemList.appendChild(itemCard);
@@ -426,7 +428,7 @@ function displayPurchases(purchases) {
                     ).toLocaleDateString()}</span>
                 </div>
             </div>
-            <div class="card-actions">
+            <div class="card-actions2">
                 <button class="btn btn-sm btn-success" onclick="editPurchase(${
                   purchase.id
                 })">Edit</button>
