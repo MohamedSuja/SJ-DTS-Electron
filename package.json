@@ -1,10 +1,12 @@
 {
-  "name": "sj-dth",
+  "name": "sj-dts-electron",
   "version": "1.0.0",
-  "description": "DTH Data",
+  "description": "Customer & Purchase Management System - A modern Electron application for managing customers and tracking purchases",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -15,5 +17,12 @@
   },
   "dependencies": {
     "better-sqlite3": "^12.2.0"
-  }
+  },
+  "keywords": [
+    "electron",
+    "customer-management",
+    "purchase-tracking",
+    "sqlite",
+    "desktop-app"
+  ]
 }

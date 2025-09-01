@@ -1,162 +1,145 @@
-# SJ-DTS-Electron
+# Customer & Purchase Management System
 
-A desktop application built with Electron for managing DTH (Direct-to-Home) customer data and purchases. This application provides a simple interface for tracking customers and their purchase history using SQLite database.
+A modern Electron desktop application for managing customers and tracking their purchases efficiently.
 
 ## Features
 
-- **Customer Management**: Add and view customer information (name, contact, address)
-- **Purchase Tracking**: Record and view customer purchases with items, amounts, and dates
-- **SQLite Database**: Local data storage using better-sqlite3
-- **Cross-platform**: Works on Windows, macOS, and Linux
+### Customer Management
+- ✅ **Add Customers**: Create new customer records with name, phone, email, and address
+- ✅ **Edit Customers**: Update existing customer information
+- ✅ **Delete Customers**: Remove customers and their associated purchase history
+- ✅ **Search Customers**: Search by name or phone number in real-time
+- ✅ **View Customer Details**: See all customer information in organized cards
 
-## Project Structure
+### Purchase Management
+- ✅ **Add Purchases**: Record new purchases with item details, quantity, and pricing
+- ✅ **Edit Purchases**: Modify existing purchase records
+- ✅ **Delete Purchases**: Remove individual purchase entries
+- ✅ **View Purchase History**: See all purchases with customer information
+- ✅ **Automatic Total Calculation**: Real-time calculation of total amounts
+- ✅ **Sales Summary**: View total sales amount
 
-```
-SJ-DTS-Electron/
-├── main.js              # Main Electron process
-├── preload.js           # Preload script for secure IPC communication
-├── renderer.js          # Renderer process script
-├── index.html           # Main application window
-├── db.js                # Database configuration and setup
-├── customer.db          # SQLite database file
-├── src/
-│   └── Screens/
-│       └── Home/
-│           └── index.jsx # React component (currently empty)
-├── package.json         # Project dependencies and scripts
-└── README.md           # This file
-```
-
-## Prerequisites
-
-- Node.js (version 14 or higher)
-- npm or yarn package manager
+### User Interface
+- 🎨 **Modern Design**: Beautiful gradient backgrounds and card-based layout
+- 📱 **Responsive**: Works on different screen sizes
+- 🗂️ **Tabbed Interface**: Separate tabs for customers and purchases
+- 🔍 **Real-time Search**: Instant search functionality
+- 📊 **Visual Feedback**: Hover effects and smooth transitions
 
 ## Installation
 
-1. Clone the repository:
-
-   ```bash
-   git clone <repository-url>
-   cd SJ-DTS-Electron
-   ```
-
-2. Install dependencies:
-
+1. **Clone or download** the project files
+2. **Install dependencies**:
    ```bash
    npm install
-   # or
-   yarn install
    ```
-
-3. Rebuild native modules for Electron:
+3. **Start the application**:
    ```bash
-   ./node_modules/.bin/electron-rebuild
+   npm start
    ```
 
 ## Usage
 
-### Development
+### Managing Customers
 
-To run the application in development mode:
+1. **Adding a Customer**:
+   - Go to the "Customers" tab
+   - Fill in the customer form (Name and Phone are required)
+   - Click "Save Customer"
 
-```bash
-npm start
-# or
-yarn start
+2. **Searching Customers**:
+   - Use the search box at the top of the Customers tab
+   - Type customer name or phone number
+   - Results update in real-time
+
+3. **Editing a Customer**:
+   - Click the "Edit" button on any customer card
+   - Modify the information in the form
+   - Click "Save Customer"
+
+4. **Deleting a Customer**:
+   - Click the "Delete" button on any customer card
+   - Confirm the deletion (this will also delete all associated purchases)
+
+### Managing Purchases
+
+1. **Adding a Purchase**:
+   - Go to the "Purchases" tab
+   - Select a customer from the dropdown
+   - Fill in item details (Item Name, Quantity, Unit Price)
+   - The total amount is calculated automatically
+   - Click "Save Purchase"
+
+2. **Viewing Purchase History**:
+   - All purchases are displayed in the Purchases tab
+   - Each purchase shows customer name, item details, and pricing
+   - Total sales amount is displayed at the bottom
+
+3. **Editing a Purchase**:
+   - Click the "Edit" button on any purchase card
+   - Modify the information in the form
+   - Click "Save Purchase"
+
+4. **Deleting a Purchase**:
+   - Click the "Delete" button on any purchase card
+   - Confirm the deletion
+
+### Viewing Customer Purchases
+
+- Click "View Purchases" on any customer card to see only that customer's purchase history
+- The application will switch to the Purchases tab and filter the results
+
+## Database
+
+The application uses SQLite for data storage:
+- **Database file**: `customer.db` (created automatically)
+- **Tables**: 
+  - `customers`: Customer information
+  - `purchases`: Purchase records with foreign key to customers
+
+## Technical Details
+
+- **Framework**: Electron
+- **Database**: SQLite (better-sqlite3)
+- **Frontend**: Vanilla JavaScript with modern CSS
+- **Architecture**: IPC-based communication between main and renderer processes
+
+## File Structure
+
 ```
-
-This will launch the Electron application with the main window.
-
-### Database Operations
-
-The application provides the following database operations through IPC (Inter-Process Communication):
-
-#### Customer Operations
-
-- **Add Customer**: Insert new customer with name, contact, and address
-- **Get Customers**: Retrieve all customers from the database
-
-#### Purchase Operations
-
-- **Add Purchase**: Record a new purchase with customer ID, item, amount, and date
-- **Get Purchases**: Retrieve all purchases for a specific customer
-
-## Dependencies
-
-### Production Dependencies
-
-- `better-sqlite3`: SQLite database driver for Node.js
-
-### Development Dependencies
-
-- `electron`: Cross-platform desktop application framework
-- `@electron/rebuild`: Rebuild native Node.js modules for Electron
-
-## Database Schema
-
-The application uses SQLite with the following tables:
-
-### Customers Table
-
-- `id` (INTEGER PRIMARY KEY)
-- `name` (TEXT)
-- `contact` (TEXT)
-- `address` (TEXT)
-
-### Purchases Table
-
-- `id` (INTEGER PRIMARY KEY)
-- `customer_id` (INTEGER, FOREIGN KEY)
-- `item` (TEXT)
-- `amount` (REAL)
-- `date` (TEXT)
+SJ-DTS-Electron/
+├── main.js          # Main Electron process
+├── preload.js       # Preload script for IPC
+├── renderer.js      # Frontend JavaScript
+├── index.html       # Main UI
+├── db.js           # Database setup and configuration
+├── customer.db     # SQLite database (auto-generated)
+└── package.json    # Project configuration
+```
 
 ## Development
 
-### Main Process (main.js)
-
-The main process handles:
-
-- Creating the application window
-- Database operations through IPC handlers
-- Application lifecycle management
-
-### Renderer Process
-
-- `index.html`: Main application interface
-- `renderer.js`: Frontend logic and UI interactions
-- `preload.js`: Secure bridge between main and renderer processes
-
-### React Components
-
-The project includes a React component structure in `src/Screens/Home/` for future UI enhancements.
+To run in development mode:
+```bash
+npm run dev
+```
 
 ## Building
 
-To build the application for distribution, you'll need to add build scripts to `package.json`:
-
-```json
-{
-  "scripts": {
-    "build": "electron-builder",
-    "dist": "npm run build"
-  }
-}
+To build the application for distribution:
+```bash
+npm run build
 ```
 
-## Contributing
+## Requirements
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Test thoroughly
-5. Submit a pull request
+- Node.js (v14 or higher)
+- npm or yarn
 
 ## License
 
-This project is licensed under the ISC License.
+ISC License
 
-## Support
+---
 
-For issues and questions, please create an issue in the repository or contact the development team.
+**Note**: This application stores data locally in a SQLite database. Make sure to backup the `customer.db` file regularly to prevent data loss.
