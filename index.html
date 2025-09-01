@@ -204,28 +204,31 @@
       }
 
       .customer-card,
-      .purchase-card {
+      .purchase-card,
+      .item-card {
         background: white;
         border: 1px solid #dee2e6;
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 15px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        border-radius: 8px;
+        padding: 15px;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
       }
 
       .customer-card:hover,
-      .purchase-card:hover {
+      .purchase-card:hover,
+      .item-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
       }
 
       .customer-info,
-      .purchase-info {
+      .purchase-info,
+      .item-info {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 10px;
-        margin-bottom: 15px;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 8px;
+        margin-bottom: 12px;
       }
 
       .info-item {
@@ -236,25 +239,25 @@
       .info-label {
         font-weight: 600;
         color: #666;
-        font-size: 12px;
+        font-size: 11px;
         text-transform: uppercase;
-        margin-bottom: 5px;
+        margin-bottom: 3px;
       }
 
       .info-value {
         color: #333;
-        font-size: 14px;
+        font-size: 13px;
       }
 
       .card-actions {
         display: flex;
-        gap: 10px;
+        gap: 8px;
         flex-wrap: wrap;
       }
 
       .btn-sm {
-        padding: 8px 16px;
-        font-size: 14px;
+        padding: 6px 12px;
+        font-size: 13px;
       }
 
       .hidden {

@@ -228,23 +228,35 @@ function displayItems(items) {
 
   items.forEach((item) => {
     const itemCard = document.createElement("div");
-    itemCard.className = "card";
+    itemCard.className = "item-card";
     itemCard.innerHTML = `
-      <div class="card-content">
-        <h4>${item.name}</h4>
-        <p><strong>Description:</strong> ${
-          item.description || "No description"
-        }</p>
-        <p><strong>Unit Price:</strong> $${item.unit_price}</p>
-        <p><strong>Created:</strong> ${new Date(
-          item.created_at
-        ).toLocaleDateString()}</p>
+      <div class="item-info">
+        <div class="info-item">
+          <span class="info-label">Name</span>
+          <span class="info-value">${item.name}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Description</span>
+          <span class="info-value">${
+            item.description || "No description"
+          }</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Unit Price</span>
+          <span class="info-value">$${item.unit_price}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Created</span>
+          <span class="info-value">${new Date(
+            item.created_at
+          ).toLocaleDateString()}</span>
+        </div>
       </div>
       <div class="card-actions">
-        <button class="btn btn-secondary" onclick="editItem(${
+        <button class="btn btn-sm btn-success" onclick="editItem(${
           item.id
         })">Edit</button>
-        <button class="btn btn-danger" onclick="deleteItem(${
+        <button class="btn btn-sm btn-danger" onclick="deleteItem(${
           item.id
         })">Delete</button>
       </div>
