@@ -477,16 +477,19 @@
               <div class="form-group">
                 <label for="purchaseCustomer">Customer *</label>
                 <div class="searchable-dropdown" id="customerDropdown">
-                  <div class="dropdown-header" onclick="toggleCustomerDropdown()">
+                  <div
+                    class="dropdown-header"
+                    onclick="toggleCustomerDropdown()"
+                  >
                     <span id="selectedCustomerText">Select Customer</span>
                     <span class="dropdown-arrow">▼</span>
                   </div>
                   <div class="dropdown-content" id="customerDropdownContent">
                     <div class="search-input-container">
-                      <input 
-                        type="text" 
-                        id="customerSearchInput" 
-                        placeholder="Search customers..." 
+                      <input
+                        type="text"
+                        id="customerSearchInput"
+                        placeholder="Search customers..."
                         oninput="filterCustomers(this.value)"
                         onfocus="showCustomerDropdown()"
                       />
