@@ -143,7 +143,9 @@ ipcMain.handle("update-item", (event, item) => {
 // Delete Item
 ipcMain.handle("delete-item", (event, id) => {
   // Check if item is used in any purchases
-  const purchaseCount = db.prepare("SELECT COUNT(*) as count FROM purchases WHERE item_id = ?").get(id);
+  const purchaseCount = db
+    .prepare("SELECT COUNT(*) as count FROM purchases WHERE item_id = ?")
+    .get(id);
   if (purchaseCount.count > 0) {
     throw new Error("Cannot delete item that is used in purchases");
   }
@@ -187,9 +189,14 @@ ipcMain.handle("get-purchases", (event, customerId) => {
       throw new Error("Invalid customer ID provided");
     }
 
-    const stmt = db.prepare(
-      "SELECT * FROM purchases WHERE customer_id = ? ORDER BY purchase_date DESC"
-    );
+    const stmt = db.prepare(`
+      SELECT p.*, c.name as customer_name, i.name as item_name 
+      FROM purchases p 
+      JOIN customers c ON p.customer_id = c.id 
+      JOIN items i ON p.item_id = i.id
+      WHERE p.customer_id = ? 
+      ORDER BY p.purchase_date DESC
+    `);
     const purchases = stmt.all(customerId);
 
     console.log("Main process: Found purchases:", purchases.length);
